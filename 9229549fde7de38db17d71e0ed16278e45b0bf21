@@ -22,6 +22,30 @@
       "revId": "9229549fde7de38db17d71e0ed16278e45b0bf21",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5faad753_a4c4d741",
+        "filename": "BoardConfig.mk",
+        "patchSetId": 1
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 2936
+      },
+      "writtenOn": "2016-04-19T16:52:16Z",
+      "side": 1,
+      "message": "Yeah, that needs to be fixed.",
+      "parentUuid": "5faad753_e4cacf4d",
+      "range": {
+        "startLine": 148,
+        "startChar": 1,
+        "endLine": 148,
+        "endChar": 65
+      },
+      "revId": "9229549fde7de38db17d71e0ed16278e45b0bf21",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
     }
   ]
 }
