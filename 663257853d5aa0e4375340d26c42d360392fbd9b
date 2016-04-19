@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5faad753_24130769",
+        "filename": "BoardConfig.mk",
+        "patchSetId": 3
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 10094
+      },
+      "writtenOn": "2016-04-19T20:09:38Z",
+      "side": 1,
+      "message": "I think this should be QCPATH.  Everywhere else in these device/qcom/* repositories uses QCPATH.  Should also be guarded if QCPATH is set.",
+      "range": {
+        "startLine": 133,
+        "startChar": 17,
+        "endLine": 133,
+        "endChar": 40
+      },
+      "revId": "663257853d5aa0e4375340d26c42d360392fbd9b",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71",
+      "unresolved": false
+    }
+  ]
+}
