@@ -116,3 +116,47 @@ TARGET_HW_KEYMASTER_V03 := true
 
 #Enable peripheral manager
 TARGET_PER_MGR_ENABLED := true
+
+# CM build
+BOARD_USES_QCOM_HARDWARE := true
+
+# CM kernel build
+TARGET_CUSTOM_DTBTOOL := dtbTool
+TARGET_KERNEL_CONFIG := msm_defconfig
+TARGET_KERNEL_SOURCE := kernel/qcom/msm
+
+# CM healthd
+BOARD_NO_CHARGER_LED := true
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.qcom
+
+# Module build with CM kernel
+# HACK:
+# Since O=$(KERNEL_OUT) doesn't work for out of tree module builds and
+# specifying relative paths gets us into trouble as it is potentially
+# possible for the build output to escape from the $OUT directory, we
+# are required to copy module source files into the $OUT directory
+# somewhere for compilation.
+ifneq ($(QCPATH),)
+CORE_CTL_ROOT := $(QCPATH)/android-perf/core-ctl
+CORE_CTL_MODULE:
+	$(hide) mkdir -p $(KERNEL_OUT)/$(CORE_CTL_ROOT)
+	$(hide) cp -f $(CORE_CTL_ROOT)/Kbuild $(KERNEL_OUT)/$(CORE_CTL_ROOT)/Makefile
+	$(hide) cp -f $(CORE_CTL_ROOT)/core_ctl.c $(KERNEL_OUT)/$(CORE_CTL_ROOT)/core_ctl.c
+	$(hide) $(MAKE) $(MAKE_FLAGS) -C $(KERNEL_OUT) M=$(KERNEL_OUT)/$(CORE_CTL_ROOT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) modules
+	$(hide) $(TARGET_KERNEL_CROSS_COMPILE_PREFIX)strip --strip-debug $(KERNEL_OUT)/$(CORE_CTL_ROOT)/core_ctl.ko
+	$(hide) mkdir -p $(KERNEL_MODULES_OUT)
+	$(hide) cp -f $(KERNEL_OUT)/$(CORE_CTL_ROOT)/core_ctl.ko $(KERNEL_MODULES_OUT)
+TARGET_KERNEL_MODULES += CORE_CTL_MODULE
+endif
+
+PRIMA_ROOT := vendor/qcom/opensource/wlan/prima
+PRIMA_MODULE:
+	$(hide) mkdir -p $(KERNEL_OUT)/$(PRIMA_ROOT)
+	$(hide) cp -f $(PRIMA_ROOT)/Kbuild $(KERNEL_OUT)/$(PRIMA_ROOT)/Makefile
+	$(hide) cp -rf $(PRIMA_ROOT)/CORE $(KERNEL_OUT)/$(PRIMA_ROOT)/CORE
+	$(hide) cp -rf $(PRIMA_ROOT)/riva $(KERNEL_OUT)/$(PRIMA_ROOT)/riva
+	$(hide) $(MAKE) $(MAKE_FLAGS) -C $(KERNEL_OUT) M=$(KERNEL_OUT)/$(PRIMA_ROOT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) MODNAME=wlan CONFIG_PRONTO_WLAN=m WLAN_ROOT=$(PRIMA_ROOT) modules
+	$(hide) $(TARGET_KERNEL_CROSS_COMPILE_PREFIX)strip --strip-debug $(KERNEL_OUT)/$(PRIMA_ROOT)/wlan.ko
+	$(hide) mkdir -p $(KERNEL_MODULES_OUT)/pronto
+	$(hide) cp -f $(KERNEL_OUT)/$(PRIMA_ROOT)/wlan.ko $(KERNEL_MODULES_OUT)/pronto/pronto_wlan.ko
+TARGET_KERNEL_MODULES += PRIMA_MODULE
